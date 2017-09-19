@@ -144,7 +144,8 @@ export var getTrackLeft = function (spec) {
           }
 
           if (targetSlide) {
-            targetLeft = targetSlide.offsetLeft * -1 + (spec.listWidth - targetSlide.offsetWidth) / 2;
+            var rect = targetSlide.getBoundingClientRect();
+            targetLeft = targetSlide.offsetLeft * -1 + (spec.listWidth - targetSlide.width) / 2;
           }
       }
   }
