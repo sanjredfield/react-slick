@@ -145,7 +145,7 @@ export var getTrackLeft = function (spec) {
 
           if (targetSlide) {
             var rect = targetSlide.getBoundingClientRect();
-            targetLeft = targetSlide.offsetLeft * -1 + (spec.listWidth - targetSlide.width) / 2;
+            targetLeft = targetSlide.offsetLeft * -1 + (spec.listWidth - rect.width) / 2;
           }
       }
   }
