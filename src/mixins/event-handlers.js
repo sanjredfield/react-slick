@@ -103,6 +103,7 @@ var EventHandlers = {
       slideIndex: this.state.currentSlide,
       trackRef: this.track
     }, this.props, this.state));
+
     touchObject.curX = (e.touches) ? e.touches[0].pageX : e.clientX;
     touchObject.curY = (e.touches) ? e.touches[0].pageY : e.clientY;
     touchObject.swipeLength = Math.round(Math.sqrt(Math.pow(touchObject.curX - touchObject.startX, 2)));

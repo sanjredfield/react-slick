@@ -35,15 +35,23 @@ var helpers = {
       slideHeight,
       listHeight,
     }, function () {
+      var track = ReactDOM.findDOMNode(this.track);
 
       var targetLeft = getTrackLeft(assign({
         slideIndex: this.state.currentSlide,
         trackRef: this.track
       }, props, this.state));
+      if (props.infinite && props.variableWidth && props.centerMode) {
+        for (var i = 0; i < track.children.length; i++) {
+          if (i === currentSlide + props.slidesToShow + 1) break;
+          targetLeft -= track.children[i].offsetWidth;
+        }
+      }
+
       // getCSS function needs previously set state
       var trackStyle = getTrackCSS(assign({left: targetLeft}, props, this.state));
 
-      this.setState({trackStyle: trackStyle});
+      this.setState({ trackStyle: trackStyle });
 
       this.autoPlay(); // once we're set up, trigger the initial autoplay.
     });
@@ -209,12 +217,16 @@ var helpers = {
 
     targetLeft = getTrackLeft(assign({
       slideIndex: targetSlide,
-      trackRef: this.track
+      trackRef: this.track,
+      isSwipe: true,
+      currentSlide: this.state.currentSlide,
     }, this.props, this.state));
 
     currentLeft = getTrackLeft(assign({
       slideIndex: currentSlide,
-      trackRef: this.track
+      trackRef: this.track,
+      isSwipe: true,
+      currentSlide: this.state.currentSlide,
     }, this.props, this.state));
 
     if (this.props.infinite === false) {
@@ -281,7 +293,6 @@ var helpers = {
       }, function () {
         this.animationEndCallback = setTimeout(callback, this.props.speed);
       });
-
     }
 
     this.autoPlay();

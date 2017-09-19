@@ -8,6 +8,7 @@ var defaultProps = {
     autoplay: false,
     autoplaySpeed: 3000,
     centerMode: false,
+    dynamicCenter: false,
     centerPadding: '50px',
     cssEase: 'ease',
     customPaging: function(i) {

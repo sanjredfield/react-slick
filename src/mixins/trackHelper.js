@@ -73,8 +73,8 @@ export var getTrackAnimateCSS = function (spec) {
 export var getTrackLeft = function (spec) {
 
   checkSpecKeys(spec, [
-   'slideIndex', 'trackRef', 'infinite', 'centerMode', 'slideCount', 'slidesToShow',
-   'slidesToScroll', 'slideWidth', 'listWidth', 'variableWidth', 'slideHeight']);
+   'slideIndex', 'trackRef', 'infinite', 'centerMode', 'dynamicCenter', 'slideCount',
+   'slidesToShow', 'slidesToScroll', 'slideWidth', 'listWidth', 'variableWidth', 'slideHeight']);
 
   var slideOffset = 0;
   var targetLeft;
@@ -111,8 +111,6 @@ export var getTrackLeft = function (spec) {
     }
   }
 
-
-
   if (spec.centerMode) {
     if(spec.infinite) {
       slideOffset += spec.slideWidth * Math.floor(spec.slidesToShow / 2);
@@ -128,24 +126,43 @@ export var getTrackLeft = function (spec) {
   }
 
   if (spec.variableWidth === true) {
-      var targetSlideIndex;
-      if(spec.slideCount <= spec.slidesToShow || spec.infinite === false) {
-          targetSlide = ReactDOM.findDOMNode(spec.trackRef).childNodes[spec.slideIndex];
-      } else {
-          targetSlideIndex = (spec.slideIndex + spec.slidesToShow);
-          targetSlide = ReactDOM.findDOMNode(spec.trackRef).childNodes[targetSlideIndex];
-      }
-      targetLeft = targetSlide ? targetSlide.offsetLeft * -1 : 0;
-      if (spec.centerMode === true) {
-          if(spec.infinite === false) {
-              targetSlide = ReactDOM.findDOMNode(spec.trackRef).children[spec.slideIndex];
+      var targetSlideIndex, currentSlideIndex, currentSlide;
+
+      if (!spec.centerMode) {
+          if(spec.slideCount <= spec.slidesToShow || spec.infinite === false) {
+              targetSlide = ReactDOM.findDOMNode(spec.trackRef).childNodes[spec.slideIndex];
           } else {
-              targetSlide = ReactDOM.findDOMNode(spec.trackRef).children[(spec.slideIndex + spec.slidesToShow + 1)];
+              targetSlideIndex = (spec.slideIndex + spec.slidesToShow);
+              targetSlide = ReactDOM.findDOMNode(spec.trackRef).childNodes[targetSlideIndex];
+          }
+          targetLeft = targetSlide ? targetSlide.offsetLeft * -1 : 0;
+      } else {
+          targetLeft = 0;
+
+          if (spec.infinite === false) {
+              targetSlideIndex = spec.slideIndex;
+              currentSlideIndex = spec.currentSlide;
+              targetSlide = ReactDOM.findDOMNode(spec.trackRef).children[targetSlideIndex];
+              currentSlide = ReactDOM.findDOMNode(spec.trackRef).children[currentSlideIndex];
+          } else {
+              targetSlideIndex = spec.slideIndex + spec.slidesToShow + 1;
+              currentSlideIndex = spec.currentSlide + spec.slidesToShow + 1;
+              targetSlide = ReactDOM.findDOMNode(spec.trackRef).children[targetSlideIndex];
+              currentSlide = ReactDOM.findDOMNode(spec.trackRef).children[currentSlideIndex];
           }
 
           if (targetSlide) {
-            var rect = targetSlide.getBoundingClientRect();
-            targetLeft = targetSlide.offsetLeft * -1 + (spec.listWidth - rect.width) / 2;
+              var offsetLeft = targetSlide.offsetLeft, offsetWidth = targetSlide.offsetWidth;
+              if (spec.isSwipe && spec.dynamicCenter) {
+                  offsetLeft = targetSlideIndex * targetSlide.offsetWidth;
+                  offsetWidth = currentSlide.offsetWidth;
+
+                  if (spec.slideIndex >= spec.slideCount - 2) {
+                      var offsetDiff = currentSlide.offsetWidth - targetSlide.offsetWidth;
+                      offsetLeft += offsetDiff;
+                  }
+              }
+              targetLeft = Math.abs(offsetLeft) * -1 + (spec.slideWidth - offsetWidth) / 2;
           }
       }
   }
