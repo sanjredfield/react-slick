@@ -157,10 +157,10 @@ export var getTrackLeft = function (spec) {
                   offsetLeft = targetSlideIndex * targetSlide.offsetWidth;
                   offsetWidth = currentSlide.offsetWidth;
 
-                  if (spec.slideIndex >= spec.slideCount - 2) {
-                      var offsetDiff = currentSlide.offsetWidth - targetSlide.offsetWidth;
-                      offsetLeft += offsetDiff;
-                  }
+                  // if (spec.slideIndex >= spec.slideCount - 2) {
+                  //     var offsetDiff = currentSlide.offsetWidth - targetSlide.offsetWidth;
+                  //     offsetLeft += offsetDiff;
+                  // }
               }
               targetLeft = Math.abs(offsetLeft) * -1 + (spec.slideWidth - offsetWidth) / 2;
           }

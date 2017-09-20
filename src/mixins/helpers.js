@@ -274,6 +274,7 @@ var helpers = {
       var nextStateChanges = {
         animating: false,
         currentSlide: currentSlide,
+        targetSlide: null,
         trackStyle: getTrackCSS(assign({left: currentLeft}, this.props, this.state)),
         swipeLeft: null
       };
@@ -286,9 +287,11 @@ var helpers = {
         delete this.animationEndCallback;
       };
 
+      console.log(targetSlide);
       this.setState({
         animating: true,
         currentSlide: currentSlide,
+        targetSlide: targetSlide,
         trackStyle: getTrackAnimateCSS(assign({left: targetLeft}, this.props, this.state))
       }, function () {
         this.animationEndCallback = setTimeout(callback, this.props.speed);

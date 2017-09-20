@@ -145,6 +145,7 @@ export var InnerSlider = createReactClass({
       slidesToShow: this.props.slidesToShow,
       slidesToScroll: this.props.slidesToScroll,
       slideCount: this.state.slideCount,
+      targetSlide: this.state.targetSlide,
       trackStyle: this.state.trackStyle,
       variableWidth: this.props.variableWidth
     };

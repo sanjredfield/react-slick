@@ -24,12 +24,13 @@ var getSlideClasses = (spec) => {
   } else {
     slickActive = (spec.currentSlide <= index) && (index < spec.currentSlide + spec.slidesToShow);
   }
-  return classnames({
+
+  return {
     'slick-slide': true,
     'slick-active': slickActive,
     'slick-center': slickCenter,
-    'slick-cloned': slickCloned
-  });
+    'slick-cloned': slickCloned,
+  };
 };
 
 var getSlideStyle = function (spec) {
@@ -61,7 +62,7 @@ var renderSlides = function (spec) {
   var preCloneSlides = [];
   var postCloneSlides = [];
   var count = React.Children.count(spec.children);
-
+  console.log(`targetSlide ${spec.targetSlide}`)
 
   React.Children.forEach(spec.children, (elem, index) => {
     let child;
@@ -79,12 +80,20 @@ var renderSlides = function (spec) {
     }
     var childStyle = getSlideStyle(assign({}, spec, {index: index}));
     var slickClasses = getSlideClasses(assign({index: index}, spec));
-    var cssClasses;
+    var hadCenter = slickClasses['slick-center'];
+    var slickClassesCopy = slickClasses;
+    if (spec.targetSlide && index !== spec.targetSlide) {
+      delete slickClasses['slick-center'];
+    } else if (this.prevTargetSlide && ((this.prevTargetSlide - index) % spec.slideCount) == 0) {
+      slickClasses['slick-slide-no-animate'] = true;
+      this.prevTargetSlide = null;
+    }
 
+    var cssClasses;
     if (child.props.className) {
-        cssClasses = classnames(slickClasses, child.props.className);
+        cssClasses = classnames(child.props.className, slickClassesCopy);
     } else {
-        cssClasses = slickClasses;
+        cssClasses = classnames(slickClassesCopy);
     }
 
     const onClick = function(e) {
@@ -109,10 +118,16 @@ var renderSlides = function (spec) {
 
       if (index >= (count - infiniteCount)) {
         key = -(count - index);
+        if (!spec.targetSlide || key !== spec.targetSlide) {
+          delete slickClasses['slick-center'];
+        } else if (key === spec.targetSlide) {
+          slickClasses['slick-center'] = hadCenter;
+        }
+
         preCloneSlides.push(React.cloneElement(child, {
           key: 'precloned' + getKey(child, key),
           'data-index': key,
-          className: cssClasses,
+          className: classnames(slickClasses),
           style: assign({}, child.props.style || {}, childStyle),
           onClick
         }));
@@ -120,10 +135,16 @@ var renderSlides = function (spec) {
 
       if (index < infiniteCount) {
         key = count + index;
+        if (!spec.targetSlide || key !== spec.targetSlide) {
+          delete slickClasses['slick-center'];
+        } else if (key === spec.targetSlide) {
+          slickClasses['slick-center'] = hadCenter;
+        }
+
         postCloneSlides.push(React.cloneElement(child, {
           key: 'postcloned' + getKey(child, key),
           'data-index': key,
-          className: cssClasses,
+          className: classnames(slickClasses),
           style: assign({}, child.props.style || {}, childStyle),
           onClick
         }));
@@ -136,11 +157,15 @@ var renderSlides = function (spec) {
   } else {
     return preCloneSlides.concat(slides, postCloneSlides);
   }
-
-
 };
 
 export class Track extends React.Component {
+  componentWillReceiveProps(newProps) {
+    if (newProps.targetSlide !== this.props.targetSlide) {
+      this.prevTargetSlide = this.props.targetSlide;
+    }
+  }
+
   render() {
     var slides = renderSlides.call(this, this.props);
     return (
