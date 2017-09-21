@@ -166,6 +166,11 @@ export class Track extends React.Component {
     }
   }
 
+  shouldComponentUpdate(newProps, newState) {
+    console.log('shouldComponentUpdate called');
+    return !(newProps.targetSlide && this.props.targetSlide);
+  }
+
   render() {
     var slides = renderSlides.call(this, this.props);
     return (
