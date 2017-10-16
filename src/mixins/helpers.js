@@ -287,7 +287,6 @@ var helpers = {
         delete this.animationEndCallback;
       };
 
-      console.log(targetSlide);
       this.setState({
         animating: true,
         currentSlide: currentSlide,

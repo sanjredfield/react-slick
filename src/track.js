@@ -62,7 +62,6 @@ var renderSlides = function (spec) {
   var preCloneSlides = [];
   var postCloneSlides = [];
   var count = React.Children.count(spec.children);
-  console.log(`targetSlide ${spec.targetSlide}`)
 
   React.Children.forEach(spec.children, (elem, index) => {
     let child;
@@ -167,7 +166,6 @@ export class Track extends React.Component {
   }
 
   shouldComponentUpdate(newProps, newState) {
-    console.log('shouldComponentUpdate called');
     return !(newProps.targetSlide && this.props.targetSlide);
   }
 
