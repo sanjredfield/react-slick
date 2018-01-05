@@ -109,7 +109,7 @@ var EventHandlers = {
     touchObject.swipeLength = Math.round(Math.sqrt(Math.pow(touchObject.curX - touchObject.startX, 2)));
     var verticalSwipeLength = Math.round(Math.sqrt(Math.pow(touchObject.curY - touchObject.startY, 2)));
 
-    if (!this.props.verticalSwiping && !this.state.swiping && verticalSwipeLength > 4) {
+    if (!this.props.verticalSwiping && !this.state.swiping && verticalSwipeLength > 20) {
       this.setState({
         scrolling: true
       })
