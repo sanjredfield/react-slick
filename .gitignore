@@ -10,3 +10,5 @@ lib
 *.sublime-*
 .idea
 dist
+package-lock.json
+*.tgz
